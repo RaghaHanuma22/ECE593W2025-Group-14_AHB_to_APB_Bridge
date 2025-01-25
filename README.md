@@ -1,1 +1,1 @@
-# ECE593W2025-Group-14_AHB_to_APB_Bridge
+# Group 14 - AHB to APB Bridge
