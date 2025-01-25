@@ -38,5 +38,7 @@ Then select your project-structure branch to compare against main
     - Once approved, you or someone else  can merge it into main
 
 # After PR is merged
+```bash
 git checkout main
 git pull  # Get latest including your merged changes
+```
