@@ -36,3 +36,7 @@ Then select your project-structure branch to compare against main
 - After creating the PR:
     - We all  can review the code, leave comments or request changes
     - Once approved, you or someone else  can merge it into main
+
+# After PR is merged
+git checkout main
+git pull  # Get latest including your merged changes
