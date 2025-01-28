@@ -42,3 +42,9 @@ Then select your project-structure branch to compare against main
 git checkout main
 git pull  # Get latest including your merged changes
 ```
+
+#Notes
+If for some reason when pushing to your branch if it doesn't work, do the following
+```bash
+git push --set-upstream origin <branch-name>
+```
