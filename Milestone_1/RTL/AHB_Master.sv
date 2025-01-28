@@ -11,7 +11,7 @@
 // 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-module AHB_Master(ahb2apb_interface.ahb_master hm,clk);
+module AHB_Master(ahb2apb_interface.ahb_master hm,input logic clk);
 
 
 task single_read();
