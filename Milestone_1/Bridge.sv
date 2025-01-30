@@ -4,7 +4,7 @@ module Bridge (
 	input  logic        hresetn
 );
 
-// **Intermediate Signals (Wire Replaced with Logic for SV Best Practices)**
+
 logic valid;
 logic [31:0] haddr1, haddr2, hwdata1, hwdata2;
 logic hwritereg;
