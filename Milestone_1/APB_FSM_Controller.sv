@@ -7,8 +7,8 @@ module APB_FSM_Controller (
 	input logic	[31:0]				haddr2,
 	input logic [31:0]				hwdata1,
 	input logic	[31:0]				hwdata2,
-	input logic						hrwritereg,
-	input logic 					tempsel,
+	input logic						hwritereg,
+	input logic 					tempsel
 );
 
 // ** Define FSM States using Enum **
@@ -102,7 +102,7 @@ always_comb begin
 
     case (PRESENT_STATE)
         ST_IDLE: begin
-            if (valid && ~hwrite) begin
+            if (valid && ~hc.hwrite) begin
                 paddr_temp      = hc.haddr;
                 pwrite_temp     = hc.hwrite;
                 psel_temp      = tempsel;
@@ -131,7 +131,7 @@ always_comb begin
         end
 
         ST_RENABLE: begin
-            if (valid && ~hwrite) begin
+            if (valid && ~hc.hwrite) begin
                 paddr_temp      = hc.haddr;
                 pwrite_temp     = hc.hwrite;
                 psel_temp      = tempsel;
