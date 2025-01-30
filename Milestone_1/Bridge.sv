@@ -20,7 +20,7 @@ AHB_slave_interface AHBSlave (
 APB_FSM_Controller APBControl (
 	.hc(hb),
     .clk(clk), .hresetn(hresetn), .valid(valid), .haddr1(haddr1), 
-	.haddr2(haddr2), .hwdata1(hwdata1), .hwdata2(hwdata2),.tempsel(tempsel)
+	.haddr2(haddr2), .hwdata1(hwdata1), .hwdata2(hwdata2),.tempsel(tempselx)
 );
 
 endmodule
