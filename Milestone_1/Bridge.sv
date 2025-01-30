@@ -12,20 +12,15 @@ logic [2:0] tempsel;
 
 // **Module Instantiations**
 AHB_slave_interface AHBSlave (
-    .clk(clk), .hresetn(hresetn), .hb.hwrite(hb.hwrite), .hb.hreadyin(hb.hreadyin),
-    .hb.htrans(hb.htrans), .hb.haddr(hb.haddr), .hb.hwdata(hb.hwdata), .hb.prdata(hb.prdata),
-    .valid(valid), .haddr1(haddr1), .haddr2(haddr2), .hwdata1(hwdata1),
-    .hwdata2(hwdata2), .hb.hrdata(hb.hrdata), .hwritereg(hwritereg),
-    .tempsel(tempsel), .hb.hresp(hb.hresp)
+	.br(hb),
+    .clk(clk), .hresetn(hresetn), .valid(valid), .haddr1(haddr1), .haddr2(haddr2), .hwdata1(hwdata1),
+    .hwdata2(hwdata2), .hwritereg(hwritereg), .tempsel(tempsel)
 );
 
 APB_FSM_Controller APBControl (
-    .clk(clk), .hresetn(hresetn), .valid(valid),
-    .haddr1(haddr1), .haddr2(haddr2), .hwdata1(hwdata1), .hwdata2(hwdata2),
-    .hb.prdata(hb.prdata), .hb.hwrite(hb.hwrite), .hb.haddr(hb.haddr), .hb.hwdata(hb.hwdata),
-    .hb.hwritereg(hb.hwritereg), .tempsel(tempsel),
-    .hb.pwrite(hb.pwrite), .hb.penable(hb.penable), .hb.psel(hb.psel),
-    .hb.paddr(hb.paddr), .hb.pwdata(hb.pwdata), .hb.hreadyout(hb.hreadyout)
+	.hc(hb),
+    .clk(clk), .hresetn(hresetn), .valid(valid), .haddr1(haddr1), 
+	.haddr2(haddr2), .hwdata1(hwdata1), .hwdata2(hwdata2),.tempsel(tempsel)
 );
 
 endmodule
