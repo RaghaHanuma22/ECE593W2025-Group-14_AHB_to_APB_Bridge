@@ -28,8 +28,13 @@ interface ahb2apb_interface;
 
     // Bridge modport
     modport bridge(
-        input hsize, haddr, htrans, hwrite, hwdata, hreadyin, prdata, // Inputs
+        input hsize, haddr, htrans, hwrite, hwdata, hreadyin, prdata,hburst, // Inputs
         output hrdata, hreadyout, hresp, psel, penable, paddr, pwrite, pwdata // Outputs
+    );
+
+    modport ahb_slave(
+        input haddr,hwdata,hwrite,htrans,prdata,hreadyin,
+        output hrdata,hresp
     );
 
     // APB slave modport
