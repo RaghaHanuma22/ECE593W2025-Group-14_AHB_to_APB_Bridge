@@ -1,3 +1,11 @@
+//------------------------------------------------------------------------------
+// File        : testbench.sv
+// Description : Testbench for AHB to APB Bridge verification
+//               Tests single/burst read/write operations with monitoring
+//------------------------------------------------------------------------------
+
+
+
 module top;
 
     // ** Signal Declarations **
