@@ -1,4 +1,6 @@
 interface ahb2apb_interface;
+    //global signals
+    logic hclk,hresetn;      //Clock and reset signals
     // AHB signals
     logic [2:0] hsize;       // Data size (byte, halfword, word)
     logic [31:0] haddr;      // Address for the transaction
@@ -28,18 +30,18 @@ interface ahb2apb_interface;
 
     // Bridge modport
     modport bridge(
-        input hsize, haddr, htrans, hwrite, hwdata, hreadyin, prdata,hburst, // Inputs
+        input hclk,hresetn,hsize, haddr, htrans, hwrite, hwdata, hreadyin, prdata,hburst, // Inputs
         output hrdata, hreadyout, hresp, psel, penable, paddr, pwrite, pwdata // Outputs
     );
 
     modport ahb_slave(
-        input haddr,hwdata,hwrite,htrans,prdata,hreadyin,
+        input hclk,hresetn,haddr,hwdata,hwrite,htrans,prdata,hreadyin,
         output hrdata,hresp
     );
 
     // APB slave modport
     modport apb_slave(
-        input psel, penable, paddr, pwrite, pwdata, // Inputs from bridge
+        input hclk,hresetn,psel, penable, paddr, pwrite, pwdata, // Inputs from bridge
         output prdata                               // Output to bridge
     );
 
