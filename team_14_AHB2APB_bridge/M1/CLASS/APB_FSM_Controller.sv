@@ -1,7 +1,5 @@
 module APB_FSM_Controller (
     ahb2apb_interface.bridge hc,  // AHB-to-APB bridge interface
-    input logic clk,              // Clock signal
-    input logic hresetn,          // Active-low reset signal
     input logic valid,            // Valid signal to indicate valid transaction
     input logic [31:0] haddr1,    // Address pipelined
     input logic [31:0] haddr2,    // Address pipelined
@@ -33,8 +31,8 @@ logic [2:0] counter;
 fsm_state_t PRESENT_STATE, NEXT_STATE;
 
 // ** State Transition Logic **
-always_ff @(posedge clk or negedge hresetn) begin
-    if (!hresetn) begin
+always_ff @(posedge hc.hclk or negedge hc.hresetn) begin
+    if (!hc.hresetn) begin
         // Reset to IDLE state and clear counter
         PRESENT_STATE <= ST_IDLE;
         counter <= 0;
@@ -142,7 +140,7 @@ always_comb begin
                 paddr_temp      = hc.haddr;
                 pwrite_temp     = hc.hwrite;
                 psel_temp       = tempsel;
-                penable_temp    = 0;
+                penable_temp    = 1; //should change
                 hreadyout_temp  = 0;
                 pwdata_temp     = 32'd0;
             end
@@ -172,12 +170,11 @@ always_comb begin
 
         ST_RENABLE: begin
             // Capture read data and prepare for next operation
-            paddr_temp      = hc.haddr;
+            //paddr_temp      = hc.haddr;
+            paddr_temp      = haddr2;
             pwrite_temp     = hc.hwrite;
             psel_temp       = tempsel;
-            if (hc.penable) begin
-                hrdata_temp = hc.prdata;  // Capture `prdata` when `penable` is active
-            end
+            hrdata_temp = hc.prdata;
             penable_temp    = 0;
             hreadyout_temp  = 0;
         end
@@ -226,8 +223,8 @@ always_comb begin
 end
 
 // ** Output Logic (Sequential) **
-always_ff @(posedge clk or negedge hresetn) begin
-    if (!hresetn) begin
+always_ff @(posedge hc.hclk or negedge hc.hresetn) begin
+    if (!hc.hresetn) begin
         // Reset all outputs
         hc.paddr      <= 0;
         hc.pwrite     <= 0;
