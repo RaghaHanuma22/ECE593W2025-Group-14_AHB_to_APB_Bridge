@@ -6,18 +6,17 @@ event done,next;
 
 function new(mailbox #(transaction) gen2driv);
 this.gen2driv=gen2driv;
-tr=new();
 endfunction
 
 task run;
 repeat(20) begin
+    tr=new();
 assert(tr.randomize) else $error("[GEN]: Randomization failed!");
 gen2driv.put(tr);
 $display("[GEN]: Operation: %d",tr.oper);
-//@(next);
+@(next);
 end
-//->done;
+->done;
 endtask
-
 
 endclass
