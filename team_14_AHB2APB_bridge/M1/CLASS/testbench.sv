@@ -1,5 +1,3 @@
-`include "driver.sv"
-
 module top;
 
     // ** Signal Declarations **

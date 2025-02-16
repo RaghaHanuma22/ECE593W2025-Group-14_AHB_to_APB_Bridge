@@ -1,6 +1,6 @@
 # Group 14 - AHB to APB Bridge
 
-Implementation of AHB to APB Bridge for ECE-593 (Pre-Silicon Verification)
+Implementation of AHB to APB Bridge for ECE-593 (Pre-Silicon Validation)
 
 # Contributing to the project
 ## Basic Workflow
@@ -20,7 +20,7 @@ git commit -m "Descriptive message about changes"
 ```
 4. Push your branch to the remote repository
 ```bash
-git push origin feature/if_stage
+git push origin feature/AHB2APB_FSM_Controller 
 ```
 5. Creat a Pull Request (PR) on GitHub when your feature is complete
 This step is as follows: 
@@ -36,3 +36,15 @@ Then select your project-structure branch to compare against main
 - After creating the PR:
     - We all  can review the code, leave comments or request changes
     - Once approved, you or someone else  can merge it into main
+
+# After PR is merged
+```bash
+git checkout main
+git pull  # Get latest including your merged changes
+```
+
+#Notes
+If for some reason when pushing to your branch if it doesn't work, do the following
+```bash
+git push --set-upstream origin <branch-name>
+```
