@@ -1,9 +1,10 @@
-`include "transaction.sv"
+`include "driver.sv"
+
 
 class monitor;
     // Virtual interface
     virtual ahb2apb_interface vif;
-    
+    transaction tr;
     // Mailbox to send transactions to scoreboard
     mailbox #(transaction) mon2scb;
     
@@ -20,12 +21,12 @@ class monitor;
     // Main monitoring task
     task run();
         $display("[MON] Monitor Started");
-        
+        tr = new();
         forever begin
-            transaction tr;
-            tr = new();
+           
             
-            @(posedge vif.hclk);
+                        
+           repeat(6) @(posedge vif.hclk);
             
             // Skip if in reset
             if(!vif.hresetn) begin
@@ -36,24 +37,22 @@ class monitor;
             // Sample AHB signals
             tr.hresetn = vif.hresetn;
             tr.hsize = vif.hsize;
-            tr.hwdata = vif.hwdata;
-            tr.haddr = vif.haddr;
+            tr.pwdata = vif.pwdata;
+            tr.paddr = vif.paddr;
             tr.htrans = vif.htrans;
-            tr.hwrite = vif.hwrite;
+            tr.pwrite = vif.pwrite;
             tr.hreadyin = vif.hreadyin;
             tr.hburst = vif.hburst;
+            tr.penable = vif.penable;
             
-            // Skip if IDLE transfer
-            if(tr.htrans == 2'b00)
-                continue;
-                
+           
             // Wait for AHB to APB conversion
             @(posedge vif.hclk);
             
             // Sample APB signals for read operations
             if(!tr.hwrite) begin
                 @(posedge vif.hclk);
-                tr.prdata = vif.prdata;
+                tr.hrdata = vif.hrdata;
             end
             
             // Determine operation type based on transaction signals
@@ -76,7 +75,7 @@ class monitor;
                     tr.oper == 2'b01 ? "Single Write" :
                     tr.oper == 2'b10 ? "Burst Read" : "Burst Write");
             $display("     Address: %h", tr.haddr);
-            $display("     Data: %h", tr.hwrite ? tr.hwdata : tr.prdata);
+            $display("     Data: %h", tr.hwrite ? tr.hwdata : tr.hrdata);
             $display("     Burst: %b", tr.hburst);
         end
     endtask

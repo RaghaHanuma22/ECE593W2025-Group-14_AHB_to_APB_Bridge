@@ -1,0 +1,232 @@
+# Reading pref.tcl
+# //  Questa Sim-64
+# //  Version 2021.3_1 linux_x86_64 Aug 15 2021
+# //
+# //  Copyright 1991-2021 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  QuestaSim and its associated documentation contain trade
+# //  secrets and commercial or financial information that are the property of
+# //  Mentor Graphics Corporation and are privileged, confidential,
+# //  and exempt from disclosure under the Freedom of Information Act,
+# //  5 U.S.C. Section 552. Furthermore, this information
+# //  is prohibited from disclosure under the Trade Secrets Act,
+# //  18 U.S.C. Section 1905.
+# //
+# Loading project ahb2apb
+# Compile of AHB_Master.sv was successful.
+# Compile of AHB_slave.sv was successful.
+# Compile of APB_FSM_Controller.sv was successful.
+# Compile of APB_slave.sv was successful.
+# Compile of Bridge.sv was successful.
+# Compile of driver.sv was successful with warnings.
+# Compile of environment.sv was successful with warnings.
+# Compile of generator.sv was successful with warnings.
+# Compile of interface.sv was successful.
+# Compile of monitor.sv was successful with warnings.
+# Compile of scoreboard.sv was successful with warnings.
+# Compile of testbench.sv was successful with warnings.
+# Compile of transaction.sv was successful with warnings.
+# 13 compiles, 0 failed with no errors.
+vsim -voptargs=+acc work.top
+# vsim -voptargs="+acc" work.top 
+# Start time: 17:00:32 on Feb 16,2025
+# ** Note: (vsim-3812) Design is being optimized...
+# ** Note: (vopt-143) Recognized 1 FSM in module "APB_FSM_Controller(fast)".
+# ** Warning: /u/ragha/UVM_Final_Project/ECE593W2025-Group-14_AHB_to_APB_Bridge/team_14_AHB2APB_bridge/M1/CLASS/Bridge.sv(22): (vopt-2685) [TFMPC] - Too few port connections for 'AHBSlave'.  Expected 10, found 8.
+# ** Warning: /u/ragha/UVM_Final_Project/ECE593W2025-Group-14_AHB_to_APB_Bridge/team_14_AHB2APB_bridge/M1/CLASS/Bridge.sv(22): (vopt-2718) [TFMPC] - Missing connection for port 'rst_n'.
+# ** Warning: /u/ragha/UVM_Final_Project/ECE593W2025-Group-14_AHB_to_APB_Bridge/team_14_AHB2APB_bridge/M1/CLASS/Bridge.sv(22): (vopt-2718) [TFMPC] - Missing connection for port 'clk'.
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=3.
+# Loading sv_std.std
+# Loading work.testbench_sv_unit(fast)
+# Loading work.top(fast)
+# Loading work.ahb2apb_interface(fast__2)
+# Loading work.Bridge(fast)
+# Loading work.AHB_slave_interface(fast)
+# Loading work.APB_FSM_Controller(fast)
+# Loading work.APB_Interface(fast)
+# Loading work.ahb2apb_interface(fast)
+add wave -position end  sim:/top/hb/hclk
+add wave -position end  sim:/top/hb/hresetn
+add wave -position end  sim:/top/hb/haddr
+add wave -position end  sim:/top/hb/paddr
+add wave -position end  sim:/top/hb/hwrite
+add wave -position end  sim:/top/hb/pwrite
+add wave -position end  sim:/top/hb/hwdata
+add wave -position end  sim:/top/hb/pwdata
+add wave -position end  sim:/top/hb/prdata
+add wave -position end  sim:/top/hb/hrdata
+add wave -position end  sim:/top/hb/hburst
+add wave -position end  sim:/top/hb/hreadyin
+add wave -position end  sim:/top/hb/hreadyout
+run -all
+# [GEN]: Operation: 1
+# [DRV]: Driver started!
+# [DRV]: sending transactions
+# [MON] Monitor Started
+# [DRV]: sending transactions
+# [MON] Transaction 1 captured at time 95
+#      Operation:  Single Read
+#      Address: 00000000
+#      Data: 00000000
+#      Burst: 000
+# [SCO]: Time:                   95 |  Size=0 Burst=0 PAddress=00000000 HAddress=80000001 Write_Data=00000000 Trans=0 Write/Read=0 penable=0 Ready=1 hrdata=00000000 prdata=00000000
+# [GEN]: Operation: 1
+# [DRV]: sending transactions
+# [MON] Transaction 2 captured at time 175
+#      Operation:  Single Read
+#      Address: 00000000
+#      Data: 00000000
+#      Burst: 000
+# [SCO]: Time:                  175 |  Size=0 Burst=0 PAddress=00000000 HAddress=80000001 Write_Data=00000000 Trans=0 Write/Read=0 penable=0 Ready=1 hrdata=00000000 prdata=00000000
+# [GEN]: Operation: 3
+# [DRV]: sending transactions
+# [MON] Transaction 3 captured at time 255
+#      Operation:   Burst Read
+#      Address: 00000000
+#      Data: 00000000
+#      Burst: 011
+# [SCO]: Time:                  255 |  Size=2 Burst=3 PAddress=00000000 HAddress=800000ff Write_Data=00000000 Trans=0 Write/Read=0 penable=0 Ready=1 hrdata=00000000 prdata=00000000
+# [GEN]: Operation: 0
+# [DRV]: sending transactions
+# [MON] Transaction 4 captured at time 335
+#      Operation:  Single Read
+#      Address: 00000000
+#      Data: 00000000
+#      Burst: 000
+# [SCO]: Time:                  335 |  Size=0 Burst=0 PAddress=00000000 HAddress=800000a2 Write_Data=00000000 Trans=0 Write/Read=0 penable=0 Ready=1 hrdata=00000000 prdata=00000000
+# [GEN]: Operation: 3
+# [DRV]: sending transactions
+# [MON] Transaction 5 captured at time 415
+#      Operation:   Burst Read
+#      Address: 00000000
+#      Data: 00000000
+#      Burst: 011
+# [SCO]: Time:                  415 |  Size=2 Burst=3 PAddress=00000000 HAddress=800000ff Write_Data=00000000 Trans=0 Write/Read=0 penable=0 Ready=1 hrdata=00000000 prdata=00000000
+# [GEN]: Operation: 0
+# [DRV]: sending transactions
+# [MON] Transaction 6 captured at time 495
+#      Operation:  Single Read
+#      Address: 00000000
+#      Data: 00000000
+#      Burst: 000
+# [SCO]: Time:                  495 |  Size=0 Burst=0 PAddress=00000000 HAddress=800000a2 Write_Data=00000000 Trans=0 Write/Read=0 penable=0 Ready=1 hrdata=00000000 prdata=00000000
+# [GEN]: Operation: 1
+# [DRV]: sending transactions
+# [MON] Transaction 7 captured at time 575
+#      Operation:  Single Read
+#      Address: 00000000
+#      Data: 00000000
+#      Burst: 000
+# [SCO]: Time:                  575 |  Size=0 Burst=0 PAddress=00000000 HAddress=80000001 Write_Data=00000000 Trans=0 Write/Read=0 penable=0 Ready=1 hrdata=00000000 prdata=00000000
+# [GEN]: Operation: 3
+# [DRV]: sending transactions
+# [MON] Transaction 8 captured at time 655
+#      Operation:   Burst Read
+#      Address: 00000000
+#      Data: 00000000
+#      Burst: 011
+# [SCO]: Time:                  655 |  Size=2 Burst=3 PAddress=00000000 HAddress=800000ff Write_Data=00000000 Trans=0 Write/Read=0 penable=0 Ready=1 hrdata=00000000 prdata=00000000
+# [GEN]: Operation: 1
+# [DRV]: sending transactions
+# [MON] Transaction 9 captured at time 735
+#      Operation:  Single Read
+#      Address: 00000000
+#      Data: 00000000
+#      Burst: 000
+# [SCO]: Time:                  735 |  Size=0 Burst=0 PAddress=00000000 HAddress=80000001 Write_Data=00000000 Trans=0 Write/Read=0 penable=0 Ready=1 hrdata=00000000 prdata=00000000
+# [GEN]: Operation: 1
+# [DRV]: sending transactions
+# [MON] Transaction 10 captured at time 815
+#      Operation:  Single Read
+#      Address: 00000000
+#      Data: 00000000
+#      Burst: 000
+# [SCO]: Time:                  815 |  Size=0 Burst=0 PAddress=00000000 HAddress=80000001 Write_Data=00000000 Trans=0 Write/Read=0 penable=0 Ready=1 hrdata=00000000 prdata=00000000
+# [GEN]: Operation: 1
+# [DRV]: sending transactions
+# [MON] Transaction 11 captured at time 895
+#      Operation:  Single Read
+#      Address: 00000000
+#      Data: 00000000
+#      Burst: 000
+# [SCO]: Time:                  895 |  Size=0 Burst=0 PAddress=00000000 HAddress=80000001 Write_Data=00000000 Trans=0 Write/Read=0 penable=0 Ready=1 hrdata=00000000 prdata=00000000
+# [GEN]: Operation: 2
+# [DRV]: sending transactions
+# [MON] Transaction 12 captured at time 975
+#      Operation:   Burst Read
+#      Address: 00000000
+#      Data: 00000000
+#      Burst: 011
+# [SCO]: Time:                  975 |  Size=2 Burst=3 PAddress=00000000 HAddress=800000c0 Write_Data=00000000 Trans=0 Write/Read=0 penable=0 Ready=1 hrdata=00000000 prdata=00000000
+# [GEN]: Operation: 2
+# [DRV]: sending transactions
+# [MON] Transaction 13 captured at time 1055
+#      Operation:   Burst Read
+#      Address: 00000000
+#      Data: 00000000
+#      Burst: 011
+# [SCO]: Time:                 1055 |  Size=2 Burst=3 PAddress=00000000 HAddress=800000c0 Write_Data=00000000 Trans=0 Write/Read=0 penable=0 Ready=1 hrdata=00000000 prdata=00000000
+# [GEN]: Operation: 1
+# [DRV]: sending transactions
+# [MON] Transaction 14 captured at time 1135
+#      Operation:  Single Read
+#      Address: 00000000
+#      Data: 00000000
+#      Burst: 000
+# [SCO]: Time:                 1135 |  Size=0 Burst=0 PAddress=00000000 HAddress=80000001 Write_Data=00000000 Trans=0 Write/Read=0 penable=0 Ready=1 hrdata=00000000 prdata=00000000
+# [GEN]: Operation: 3
+# [DRV]: sending transactions
+# [MON] Transaction 15 captured at time 1215
+#      Operation:   Burst Read
+#      Address: 00000000
+#      Data: 00000000
+#      Burst: 011
+# [SCO]: Time:                 1215 |  Size=2 Burst=3 PAddress=00000000 HAddress=800000ff Write_Data=00000000 Trans=0 Write/Read=0 penable=0 Ready=1 hrdata=00000000 prdata=00000000
+# [GEN]: Operation: 2
+# [DRV]: sending transactions
+# [MON] Transaction 16 captured at time 1295
+#      Operation:   Burst Read
+#      Address: 00000000
+#      Data: 00000000
+#      Burst: 011
+# [SCO]: Time:                 1295 |  Size=2 Burst=3 PAddress=00000000 HAddress=800000c0 Write_Data=00000000 Trans=0 Write/Read=0 penable=0 Ready=1 hrdata=00000000 prdata=00000000
+# [GEN]: Operation: 1
+# [DRV]: sending transactions
+# [MON] Transaction 17 captured at time 1375
+#      Operation:  Single Read
+#      Address: 00000000
+#      Data: 00000000
+#      Burst: 000
+# [SCO]: Time:                 1375 |  Size=0 Burst=0 PAddress=00000000 HAddress=80000001 Write_Data=00000000 Trans=0 Write/Read=0 penable=0 Ready=1 hrdata=00000000 prdata=00000000
+# [GEN]: Operation: 3
+# [DRV]: sending transactions
+# [MON] Transaction 18 captured at time 1455
+#      Operation:   Burst Read
+#      Address: 00000000
+#      Data: 00000000
+#      Burst: 011
+# [SCO]: Time:                 1455 |  Size=2 Burst=3 PAddress=00000000 HAddress=800000ff Write_Data=00000000 Trans=0 Write/Read=0 penable=0 Ready=1 hrdata=00000000 prdata=00000000
+# [GEN]: Operation: 0
+# [DRV]: sending transactions
+# [MON] Transaction 19 captured at time 1535
+#      Operation:  Single Read
+#      Address: 00000000
+#      Data: 00000000
+#      Burst: 000
+# [SCO]: Time:                 1535 |  Size=0 Burst=0 PAddress=00000000 HAddress=800000a2 Write_Data=00000000 Trans=0 Write/Read=0 penable=0 Ready=1 hrdata=00000000 prdata=00000000
+# [GEN]: Operation: 3
+# [DRV]: sending transactions
+# [MON] Transaction 20 captured at time 1615
+#      Operation:   Burst Read
+#      Address: 00000000
+#      Data: 00000000
+#      Burst: 011
+# [SCO]: Time:                 1615 |  Size=2 Burst=3 PAddress=00000000 HAddress=800000ff Write_Data=00000000 Trans=0 Write/Read=0 penable=0 Ready=1 hrdata=00000000 prdata=00000000
+# ----------------------Completed-----------------------
+# ** Note: $stop    : environment.sv(43)
+#    Time: 1615 ns  Iteration: 3  Instance: /top
+# Break in Task testbench_sv_unit/environment::post_test at environment.sv line 43
+quit
+# End time: 17:10:56 on Feb 16,2025, Elapsed time: 0:10:24
+# Errors: 0, Warnings: 8

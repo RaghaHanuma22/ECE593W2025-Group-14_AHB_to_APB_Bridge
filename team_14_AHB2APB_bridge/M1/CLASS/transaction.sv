@@ -8,6 +8,12 @@ randc bit hwrite;
 randc bit hreadyin;
 randc bit [2:0] hburst;
 randc bit [31:0] prdata;
+bit [31:0] pwdata;
+bit pwrite;
+bit [31:0] paddr;
+bit penable;
+bit [2:0] psel;
+bit [31:0] hrdata;
 
 rand bit [1:0] oper;
 

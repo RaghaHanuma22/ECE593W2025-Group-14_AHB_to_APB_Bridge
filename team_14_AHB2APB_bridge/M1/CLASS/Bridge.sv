@@ -1,6 +1,5 @@
 module Bridge (
-    ahb2apb_interface.bridge hb,  // AHB-to-APB bridge interface
-    output logic [3:0]  states    // FSM states for monitoring
+    ahb2apb_interface.bridge hb // AHB-to-APB bridge interface
 );
 
     // ** Internal Signal Declarations **
@@ -44,8 +43,7 @@ module Bridge (
         .hwdata1(hwdata1), // Connect to the first pipelined write data
         .hwdata2(hwdata2), // Connect to the second pipelined write data
         .tempsel(tempsel), // Connect to the temporary select signal
-        .hwritereg(hwritereg), // Connect to the pipelined write signal
-        .states(states)   // Connect to the FSM states for monitoring
+        .hwritereg(hwritereg) // Connect to the pipelined write signal
     );
 
     // APB Interface
