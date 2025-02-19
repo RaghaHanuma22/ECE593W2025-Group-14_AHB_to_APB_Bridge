@@ -6,8 +6,7 @@ module APB_FSM_Controller (
     input logic [31:0] hwdata1,   // Write data pipelined
     input logic [31:0] hwdata2,   // Write data pipelined
     input logic hwritereg,        // Write register signal
-    input logic [2:0] tempsel,    // Temporary select signal for APB slave
-    output logic [3:0] states     // Current state of the FSM
+    input logic [2:0] tempsel    // Temporary select signal for APB slave
 );
 
 // ** Define FSM States using Enum **
@@ -245,7 +244,5 @@ always_ff @(posedge hc.hclk or negedge hc.hresetn) begin
     end
 end
 
-// Assign current state to output
-assign states = PRESENT_STATE;
 
 endmodule
