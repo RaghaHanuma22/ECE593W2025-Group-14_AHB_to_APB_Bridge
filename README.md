@@ -2,6 +2,11 @@
 
 Implementation of AHB to APB Bridge for ECE-593 (Pre-Silicon Validation)
 
+# UVM Testbench Architecture
+![UVM_TB_Arch](https://github.com/user-attachments/assets/ef21055b-2b6b-49ae-a334-41ad5d257762)
+
+
+
 # Contributing to the project
 ## Basic Workflow
 1. Clone the repository
