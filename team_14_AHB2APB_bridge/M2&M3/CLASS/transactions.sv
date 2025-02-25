@@ -47,7 +47,7 @@ class Transaction;
 
 // Constraints for size and burst types
   constraint size_data {Hsize inside {0,1,2};}
-  constraint burst_data {Hburst inside {0,1,2};}
+  constraint burst_data {Hburst dist {0:=10,1:=10,2:=80};}
 
 //Coverage group
 
@@ -79,15 +79,6 @@ class Transaction;
     bins size_1 = {1};
     bins size_2 = {2};
   }
-
-  Hburst_cp: coverpoint Hburst {
-    bins burst_0 = {0};
-    bins burst_1 = {1};
-    bins burst_2 = {2};
-  }
-
-  // Cross coverage for Hsize and Hburst
-  size_burst_cross: cross Hsize_cp, Hburst_cp;
 
   // Cover Hwrite
   Hwrite_cp: coverpoint Hwrite {
