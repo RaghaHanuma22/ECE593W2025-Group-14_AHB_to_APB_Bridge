@@ -13,6 +13,9 @@ import uvm_pkg::*;
 class apb_monitor extends uvm_monitor;
   // Virtual interface to access DUT signals - using the apb_intf
   virtual apb_intf.APB_MONITOR vif;
+   apb_transaction mon2sb;
+   ahb_apb_env_config   env_config_h;
+  
   
   // Analysis port to broadcast transactions
   uvm_analysis_port #(apb_transaction) apb_analysis_port;
@@ -30,63 +33,38 @@ class apb_monitor extends uvm_monitor;
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
     
-    if(!uvm_config_db#(virtual apb_intf.APB_MONITOR)::get(this, "", "vif", vif))
-      `uvm_fatal("APB_MON", "Failed to get virtual interface")
+    if(!uvm_config_db # (ahb_apb_env_config) :: get(this,"","ahb_apb_env_config",env_config_h))
+      `uvm_fatal("config", "can't get env_config_h from uvm_config_db")
   endfunction
+      
+    function void connect_phase(uvm_phase phase);
+        vif = env_config_h.apb_vif;
+    endfunction
   
-  // Run phase - Monitor the interface for APB transactions
-  virtual task run_phase(uvm_phase phase);
-    apb_transaction tx;
-    
-    super.run_phase(phase);
-    
-    `uvm_info(get_type_name(), "APB Monitor running", UVM_MEDIUM)
-    
-    // Main monitoring loop
-    forever begin
-      tx = apb_transaction::type_id::create("tx");
-      
-      // Wait for the SETUP phase (PSEL is asserted but PENABLE is low)
-      do begin
-        @(vif.apb_monitor_cb);
-      end while (vif.apb_monitor_cb.PSELX == 3'b000 || vif.apb_monitor_cb.PENABLE);
-      
-      // We're now in the SETUP phase
-      tx.set_phase(1, 0); // Set setup_phase flag
-      
-      // Capture APB signals during SETUP phase
-      tx.Paddr = vif.apb_monitor_cb.PADDR;
-      tx.Pwrite = vif.apb_monitor_cb.PWRITE;
-      tx.Pselx = vif.apb_monitor_cb.PSELX;
-      tx.Penable = vif.apb_monitor_cb.PENABLE; // Should be 0 in SETUP
-      
-      // Wait for the ACCESS phase (PENABLE is asserted)
-      @(vif.apb_monitor_cb);
-      
-      // Verify that we're in the ACCESS phase
-      if (vif.apb_monitor_cb.PENABLE && vif.apb_monitor_cb.PSELX != 3'b000) begin
-        tx.set_phase(0, 1); // Set access_phase flag
-        
-        // Capture remaining APB signals during ACCESS phase
-        if (tx.Pwrite) begin
-          // Write transaction
-          tx.Pwdata = vif.apb_monitor_cb.PWDATA;
-          
-          `uvm_info(get_type_name(), $sformatf("APB WRITE Transaction: addr=0x%h, data=0x%h, psel=0x%h", 
-                                     tx.Paddr, tx.Pwdata, tx.Pselx), UVM_HIGH)
-        end else begin
-          // Read transaction
-          tx.Prdata = vif.apb_monitor_cb.PRDATA;
-          
-          `uvm_info(get_type_name(), $sformatf("APB READ Transaction: addr=0x%h, data=0x%h, psel=0x%h", 
-                                     tx.Paddr, tx.Prdata, tx.Pselx), UVM_HIGH)
+   task run_phase (uvm_phase phase);
+     @(posedge vif.clk);
+        forever begin
+            monitor();
         end
-        
-        // Broadcast completed transaction to subscribers
-        apb_analysis_port.write(tx);
-      end else begin
-        `uvm_error(get_type_name(), "APB protocol violation: Expected ACCESS phase but PENABLE not asserted")
-      end
-    end
-  endtask
+    endtask
+
+    task monitor();
+        begin
+          @(posedge vif.clk);
+            mon2sb = apb_sequence_item::type_id::create("mon2sb",this);
+
+            mon2sb.PRDATA   = vif.apb_monitor_cb.PRDATA;
+            mon2sb.PSLVERR  = vif.apb_monitor_cb.PSLVERR;
+            mon2sb.PREADY   = vif.apb_monitor_cb.PREADY;
+            mon2sb.PWDATA   = vif.apb_monitor_cb.PWDATA;
+            mon2sb.PENABLE  = vif.apb_monitor_cb.PENABLE;
+            mon2sb.PSELx    = vif.apb_monitor_cb.PSELx;
+            mon2sb.PADDR    = vif.apb_monitor_cb.PADDR;
+            mon2sb.PWRITE   = vif.apb_monitor_cb.PWRITE;
+
+          `uvm_info("MON", $sformatf("APB monitor received || PRDATA:%0d PSLVERR:%0d PWDATA:%0d PADDR:%0d PWRITE:%0d",mon2sb.PRDATA,mon2sb.PSLVERR, mon2sb.PWDATA, mon2sb.PADDR, mon2sb.PWRITE), UVM_NONE)
+            apb_analysis_port.write(mon2sb);
+        end     
+    endtask
+
 endclass
