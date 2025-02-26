@@ -9,52 +9,50 @@ class ahb_transaction extends uvm_sequence_item;
   typedef enum {AHB_READ, AHB_WRITE} t_type;
   t_type trans_type;
 
-  // AHB signals
-  rand bit [31:0] Haddr;
-  rand bit [31:0] Hwdata;
-  rand bit Hwrite;
-  rand bit [1:0] Htrans;
-  rand bit [2:0] Hsize;
-  rand bit [2:0] Hburst;
-  bit [31:0] Hrdata;  // Response data
-  bit [1:0] Hresp;    // Response status
-  bit Hreadyin;       // Ready input signal
-  bit Hreadyout;      // Ready output signal
-  rand bit hresp;     // Response flag
-  rand bit hreset;    // Reset flag
+  // Randomizable transaction fields
+    rand bit                   HRESETn;    // Reset signal
+    rand bit [31:0]            HADDR;      // Address
+    rand bit [1:0]             HTRANS;     // Transaction type
+    rand bit                   HWRITE;     // Write enable flag
+    rand bit [31:0]            HWDATA;     // Data to be written
+    rand bit                   HSELAHB;    // AHB bridge select signal
+
+    // Non-randomizable fields
+    bit [31:0]                 HRDATA;     // Data read
+    bit                        HREADY;     // Ready signal
+    bit                        HRESP;      // Response signal
 
   // AHB-specific constraints
-  constraint addr_range {
-    Haddr >= 32'h8000_0000; Haddr < 32'h8C00_0000;
-  }
 
   constraint data_range {
-    Hwdata >= 32'd1; Hwdata < 32'd15;
+    HWDATA >= 32'd1; HWDATA < 32'd15;
   }
 
-  constraint size_data {
-    Hsize inside {0, 1, 2}; // Byte, Halfword, Word
-  }
+    constraint LOW_RESET        {
+      HRESETn dist   {1:=9, 0:=1};
+      }
 
-  constraint burst_data {
-    Hburst inside {0, 1, 2}; // Single, Incr, Wrap4
-  }
+    constraint VALID_ADDRESS    {
+      HADDR   inside {[32'h0:32'h7ff]}; 
+      }
+
+    constraint SELECT_BRIDGE    {
+      HSELAHB dist   {1:=99, 0:=1};
+      }
+
+ // Counter to track the number of transactions
+    static int ahb_no_of_transaction;
 
   // UVM factory registration
   `uvm_object_utils_begin(ahb_transaction)
     `uvm_field_enum(t_type, trans_type, UVM_ALL_ON)
-    `uvm_field_int(Haddr, UVM_ALL_ON)
-    `uvm_field_int(Hwdata, UVM_ALL_ON)
-    `uvm_field_int(Hwrite, UVM_ALL_ON)
-    `uvm_field_int(Htrans, UVM_ALL_ON)
-    `uvm_field_int(Hsize, UVM_ALL_ON)
-    `uvm_field_int(Hburst, UVM_ALL_ON)
-    `uvm_field_int(Hrdata, UVM_ALL_ON)
-    `uvm_field_int(Hresp, UVM_ALL_ON)
-    `uvm_field_int(Hreadyin, UVM_ALL_ON)
-    `uvm_field_int(Hreadyout, UVM_ALL_ON)
-    `uvm_field_int(hresp, UVM_ALL_ON)
-    `uvm_field_int(hreset, UVM_ALL_ON)
+    `uvm_field_int(HRESETn, UVM_ALL_ON)
+    `uvm_field_int(HADDR, UVM_ALL_ON)
+    `uvm_field_int(HWDATA, UVM_ALL_ON)
+    `uvm_field_int(HWRITE, UVM_ALL_ON)
+    `uvm_field_int(HTRANS, UVM_ALL_ON)
+    `uvm_field_int(HSELAHB, UVM_ALL_ON)
+    `uvm_field_int(HREADY, UVM_ALL_ON)
   `uvm_object_utils_end
 
   // Constructor
@@ -64,7 +62,7 @@ class ahb_transaction extends uvm_sequence_item;
 
   // Function to determine transaction type
   function void update_trans_type();
-    if (Hwrite == 1) 
+    if (HWRITE == 1) 
       trans_type = AHB_WRITE;
     else
       trans_type = AHB_READ;
@@ -73,5 +71,6 @@ class ahb_transaction extends uvm_sequence_item;
   // Post-randomize function to update transaction type
   function void post_randomize();
     update_trans_type();
+    ahb_no_of_transaction++;
   endfunction
 endclass
