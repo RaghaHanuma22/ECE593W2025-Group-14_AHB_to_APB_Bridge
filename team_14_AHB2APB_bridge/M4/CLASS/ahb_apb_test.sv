@@ -1,34 +1,35 @@
-// This is the base test class for the ahb_apb testbench
+// This class serves as the base test for the AHB-APB testbench, setting up 
+// the environment, interface configurations, and enabling necessary components.
 class ahb_apb_base_test extends uvm_test;
-    `uvm_component_utils (ahb_apb_base_test)
+    `uvm_component_utils(ahb_apb_base_test)
 
-    // Configuration handle for environment setup
+    // Handle for the environment configuration
     ahb_apb_env_config env_config_h;
-    // Handle to the main testbench environment
+    // Handle to the testbench environment
     ahb_apb_env env_h;
 
-    // Constructor
+    // Constructor to initialize the base test class
     function new(string name = "ahb_apb_base_test", uvm_component parent = null);
         super.new(name, parent);
     endfunction
 
-    // Build Phase: Setting up the environment and agents
+    // Build phase: Configures the environment and initializes agents
     function void build_phase(uvm_phase phase);
-        // Create environment configuration object
+        // Create and register the environment configuration object
         env_config_h = ahb_apb_env_config::type_id::create("env_config_h");
         
-        // Set configuration object for child components to access
+        // Store the environment configuration object for child components
         uvm_config_db #(ahb_apb_env_config)::set(this, "*", "ahb_apb_env_config", env_config_h);
 
-        // Fetch the AHB interface from configuration
-        if(!uvm_config_db #(virtual ahb_intf)::get(this, "", "ahb_vif", env_config_h.ahb_vif))
-            `uvm_fatal ("config", "can't get ahb_intf from config_db");
-        
-        // Fetch the APB interface from configuration
-        if(!uvm_config_db #(virtual apb_intf)::get(this, "", "apb_vif", env_config_h.apb_vif))
-            `uvm_fatal ("config", "can't get apb_intf from config_db");
+        // Retrieve the AHB interface from the configuration database
+        if (!uvm_config_db #(virtual ahb_intf)::get(this, "", "ahb_vif", env_config_h.ahb_vif))
+            `uvm_fatal("CONFIG", "Unable to retrieve ahb_intf from config_db");
 
-        // Configure the agents and scoreboard to be active for this test
+        // Retrieve the APB interface from the configuration database
+        if (!uvm_config_db #(virtual apb_intf)::get(this, "", "apb_vif", env_config_h.apb_vif))
+            `uvm_fatal("CONFIG", "Unable to retrieve apb_intf from config_db");
+
+        // Enable the AHB and APB agents and activate the scoreboard
         env_config_h.ahb_agent_enabled  = 1;
         env_config_h.apb_agent_enabled  = 1;
         env_config_h.scoreboard_enabled = 1;
@@ -37,33 +38,34 @@ class ahb_apb_base_test extends uvm_test;
         env_config_h.ahb_agent_is_active = UVM_ACTIVE;
         env_config_h.apb_agent_is_active = UVM_ACTIVE;
 
-        // Instantiate the main testbench environment
+        // Instantiate the testbench environment
         env_h = ahb_apb_env::type_id::create("env_h", this);
     endfunction
 endclass
 
-// This is a random test derived from the base test for the ahb_apb testbench
+// This class implements a random transaction test for the AHB-APB testbench, 
+// generating unpredictable traffic on both buses to validate functionality.
 class ahb_apb_random_test extends ahb_apb_base_test;
     `uvm_component_utils(ahb_apb_random_test)
 
-    // Sequence handles to generate random traffic on AHB and APB
+    // Handles for sequences generating random AHB and APB transactions
     ahb_random_sequence ahb_rand_seq_h;
     apb_random_sequence apb_rand_seq_h;
 
-    // Constructor
+    // Constructor to initialize the random test class
     function new(string name = "ahb_apb_random_test", uvm_component parent);
         super.new(name, parent);
     endfunction
 
-    // Build Phase: Instantiate the random sequences
+    // Build phase: Creates instances of random traffic sequences
     function void build_phase(uvm_phase phase);
         super.build_phase(phase);
         ahb_rand_seq_h = ahb_random_sequence::type_id::create("ahb_rand_seq_h");
         apb_rand_seq_h = apb_random_sequence::type_id::create("apb_rand_seq_h");
     endfunction
 
-    // Run Phase: Start the random sequences on the respective sequencers
-    task run_phase (uvm_phase phase);
+    // Run phase: Executes the random sequences on their respective sequencers
+    task run_phase(uvm_phase phase);
         phase.raise_objection(this);
         fork
             ahb_rand_seq_h.start(env_h.ahb_agent_h.sequencer_h);

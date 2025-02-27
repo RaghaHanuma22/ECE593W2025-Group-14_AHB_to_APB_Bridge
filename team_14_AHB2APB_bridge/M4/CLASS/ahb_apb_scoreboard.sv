@@ -1,238 +1,148 @@
-//-----------------------------------------------------------------------------
-// File: scoreboard.sv
-//
-// Description:
-//   UVM Scoreboard for the AHB-to-APB Bridge Verification Environment.
-//   This scoreboard collects transactions from the AHB and APB monitors via
-//   their analysis ports, correlates them using FIFOs and an internal queue,
-//   and compares the AHB transaction signals (address, data, etc.) with the
-//   corresponding APB transaction signals to ensure proper data transfer.
-//   Additionally, it instantiates a covergroup (cov_cg) that samples key
-//   signals for coverage analysis.
-// 
-// Author: [Your Name]
-// Date: [Date]
-//-----------------------------------------------------------------------------
-`include "uvm_macros.svh"
-
+// AHB-APB Scoreboard:  
+// This scoreboard verifies the data flow between the AHB and APB interfaces.  
+// It captures transactions, predicts expected values, performs checks,  
+// and collects coverage metrics.  
 class scoreboard extends uvm_scoreboard;
+    `uvm_component_utils(scoreboard)
 
-  `uvm_component_utils(scoreboard)
+    // FIFOs for storing transactions received from the AHB and APB monitors  
+    uvm_tlm_analysis_fifo #(ahb_transaction) ahb_fifo;
+    uvm_tlm_analysis_fifo #(apb_transaction) apb_fifo;
 
-  //-------------------------------------------------------------------------
-  // Analysis FIFOs for transactions from monitors
-  //-------------------------------------------------------------------------
-  uvm_tlm_analysis_fifo#(ahb_transaction) ahb_fifo[$];
-  uvm_tlm_analysis_fifo#(apb_transaction) apb_fifo[$];
+    // Variables to hold received and predicted transactions for comparison  
+    ahb_transaction ahb_data_pkt, ahb_predicted_pkt, current_pkt, ahb_temp_data;
+    apb_transaction apb_data_pkt, apb_predicted_pkt;
 
-  // Configuration object (assumes ahb_apb_env_config is defined elsewhere)
-  ahb_apb_env_config m_cfg;
+    int selected_slave;     // Supports up to 8 slaves but does not monitor all  
 
-  // Internal transaction storage
-  ahb_transaction ahb_tx;
-  apb_transaction   apb_tx;
+    // Counters for tracking transactions and verified data  
+    int ahb_pkt_count = 0;
+    int apb_pkt_count = 0;
+    int verified_data_count = 0;
 
-  // Queue for correlating AHB transactions with APB transactions
-  ahb_transaction ahb_q[$];
+    // Coverage collection for different bus operations  
+    covergroup cov_group;
+        option.per_instance = 1;
+        reset      : coverpoint current_pkt.HRESETn  { bins reset_val = {0}; }
+        bus_write  : coverpoint current_pkt.HWRITE   { bins write_val = {1}; }
+        bus_read   : coverpoint current_pkt.HWRITE   { bins read_val  = {0}; }
+        H_data     : coverpoint current_pkt.HWDATA   { bins range = {[32'd1:32'd4000]}; }
+ 
+        trans_type : coverpoint current_pkt.HTRANS {
+            bins idle_val   = {2'b00};
+            bins nonseq_val = {2'b10};
+            bins seq_val    = {2'b11};
+        }
+        WRITE_COVERAGE: cross bus_write, trans_type;
+        READ_COVERAGE : cross bus_read, trans_type;
+    endgroup
 
-  //-------------------------------------------------------------------------
-  // Coverage Variables and Covergroup Definition
-  //-------------------------------------------------------------------------
-  // Variables used to sample the covergroup
-  bit [31:0] cg_Haddr;
-  bit [31:0] cg_Hwdata;
-  int        cg_trans_type;  // Assumes trans_type is represented as an int/enumeration
-  bit [2:0]  cg_Hsize;
-  bit        cg_Hwrite;
-  bit        cg_Pwrite;
+    // Constructor: Initializes scoreboard components and transactions  
+    function new (string sb_name, uvm_component sb_parent);
+        super.new(sb_name, sb_parent);
+        ahb_fifo = new("ahb_fifo", this);
+        apb_fifo = new("apb_fifo", this);
 
-  // Covergroup as specified
-  covergroup cov_cg;
-    option.per_instance = 1;
+        // Create transactions for predicted data comparison  
+        ahb_predicted_pkt = ahb_transaction::type_id::create("ahb_predicted_pkt", this);
+        apb_predicted_pkt = apb_transaction::type_id::create("apb_predicted_pkt", this);
+        ahb_temp_data = ahb_transaction::type_id::create("ahb_temp_data", this);
+        cov_group = new;
+    endfunction
 
-    // Cover Haddr range
-    Haddr_cp: coverpoint cg_Haddr {
-      bins lower_range = {[32'h8000_0000 : 32'h8400_0000]};
-      bins mid_range   = {[32'h8400_0001 : 32'h8800_0000]};
-      bins upper_range = {[32'h8800_0001 : 32'h8C00_0000]};
-    }
+    // run_phase: Continuously retrieve and process packets from the monitors  
+    task run_phase(uvm_phase phase);
+        forever begin
+            // Retrieve an AHB transaction from the FIFO  
+            ahb_fifo.get(ahb_data_pkt);
+            ahb_pkt_count++;
+            `uvm_info ("SCO", $sformatf("[%0d] Scoreboard sampled ahb_data_pkt\n%s", ahb_pkt_count, ahb_data_pkt.sprint()), UVM_MEDIUM);
 
-    // Cover Hwdata values
-    Hwdata_cp: coverpoint cg_Hwdata {
-      bins low_values  = {[1 : 5]};
-      bins mid_values  = {[6 : 10]};
-      bins high_values = {[11 : 15]};
-    }
+            // Retrieve an APB transaction from the FIFO  
+            apb_fifo.get(apb_data_pkt);
+            apb_pkt_count++;
+            `uvm_info ("SCO", $sformatf("[%0d] Scoreboard sampled apb_data_pkt\n%s", apb_pkt_count, apb_data_pkt.sprint()), UVM_MEDIUM);
 
-    // Cover transaction type
-    trans_type_cp: coverpoint cg_trans_type {
-      bins AHB_READ  = {Transaction::AHB_READ};
-      bins AHB_WRITE = {Transaction::AHB_WRITE};
-    }
+            // Predict expected data values based on transactions  
+            predict_data();
 
-    // Cover Hsize values
-    Hsize_cp: coverpoint cg_Hsize {
-      bins size_0 = {0};
-      bins size_1 = {1};
-      bins size_2 = {2};
-    }
+            // Capture coverage metrics  
+            current_pkt = ahb_data_pkt;
+            cov_group.sample();
+        end
+    endtask
 
-    // Cover Hwrite
-    Hwrite_cp: coverpoint cg_Hwrite {
-      bins WRITE = {1};
-      bins READ  = {0};
-    }
+    // predict_data: Determines the expected response for AHB and APB transactions  
+    task predict_data();
+        // Skip processing if AHB reset is active  
+        if(ahb_data_pkt.HRESETn == 1'b0) return;
 
-    // Cover Pwrite from APB
-    Pwrite_cp: coverpoint cg_Pwrite {
-      bins PWRITE = {1};
-      bins PREAD  = {0};
-    }
-  endgroup
+        // Handle AHB transaction type  
+        if(ahb_data_pkt.HTRANS == 2'b10) begin
+            ahb_temp_data.HADDR  = ahb_data_pkt.HADDR;
+            ahb_temp_data.HWRITE = ahb_data_pkt.HWRITE;
+        end 
+        else if (ahb_data_pkt.HTRANS inside {2'b11, 2'b00}) begin
+            apb_predicted_pkt.PADDR  = ahb_temp_data.HADDR;
+            apb_predicted_pkt.PWRITE = ahb_temp_data.HWRITE;
+            apb_predicted_pkt.PWDATA = ahb_data_pkt.HWDATA;
 
-  // Instance of the covergroup
-  cov_cg my_cov;
+            // Determine the appropriate PSELx value based on address  
+            configure_pselx();
 
-  //-------------------------------------------------------------------------
-  // Constructor
-  //-------------------------------------------------------------------------
-  function new(string name = "scoreboard", uvm_component parent);
-    super.new(name, parent);
-    // Instantiate the covergroup
-    my_cov = new();
-  endfunction : new
+            // Update the temporary AHB transaction data  
+            ahb_temp_data.HADDR  = ahb_data_pkt.HADDR;
+            ahb_temp_data.HWRITE = ahb_data_pkt.HWRITE;          
 
-  //-------------------------------------------------------------------------
-  // Build Phase: Create FIFOs and get configuration
-  //-------------------------------------------------------------------------
-  function void build_phase(uvm_phase phase);
-    if (!uvm_config_db#(ahb_apb_env_config)::get(this, "", "ahb_apb_env_config", m_cfg))
-      `uvm_fatal("SB", "Cannot get configuration data for ahb_apb_env_config");
+            // Compare the sampled APB transaction with predicted values  
+            check_apb_data();  
+        end
 
-    // Create FIFO arrays based on the number of agents specified in the config
-    ahb_fifo = new[m_cfg.no_of_ahb_agents];
-    apb_fifo = new[m_cfg.no_of_apb_agents];
+        // Handle APB read transactions when PENABLE is active  
+        if(apb_data_pkt.PENABLE == 1'b1 & apb_data_pkt.PWRITE == 1'b0) begin
+            ahb_predicted_pkt.HRDATA = apb_data_pkt.PRDATA[selected_slave];
+            
+            // Compare the sampled AHB transaction with predicted values  
+            check_ahb_data();
+        end
+    endtask
 
-    for (int i = 0; i < m_cfg.no_of_ahb_agents; i++) begin
-      ahb_fifo[i] = new($sformatf("ahb_fifo[%0d]", i), this);
-    end
-    for (int i = 0; i < m_cfg.no_of_apb_agents; i++) begin
-      apb_fifo[i] = new($sformatf("apb_fifo[%0d]", i), this);
-    end
+    // configure_pselx: Assigns the appropriate PSELx value based on AHB address  
+    task configure_pselx();
+        if(ahb_temp_data.HADDR inside {[32'h000:32'h0FF]}) apb_predicted_pkt.PSELX = 8'h01;
+        else if (ahb_temp_data.HADDR inside {[32'h100:32'h1FF]}) apb_predicted_pkt.PSELX = 8'h02;
+        // Continue with other address mappings as needed...
+    endtask
 
-    super.build_phase(phase);
-  endfunction : build_phase
+    // check_apb_data: Verifies APB transaction data against expected values  
+    task check_apb_data();
+        if(apb_predicted_pkt.PADDR  == apb_data_pkt.PADDR);
+        if(apb_predicted_pkt.PWRITE == apb_data_pkt.PWRITE);
+        if(apb_predicted_pkt.PSELX  == apb_data_pkt.PSELX);
+        if(apb_predicted_pkt.PWDATA == apb_data_pkt.PWDATA);
+        verified_data_count++;
+    endtask
 
-  //-------------------------------------------------------------------------
-  // Run Phase: Correlate and compare transactions
-  //-------------------------------------------------------------------------
-  task run_phase(uvm_phase phase);
-    `uvm_info("scoreboard", "Entering run_phase", UVM_MEDIUM);
+    // check_ahb_data: Verifies AHB transaction data against expected values  
+    task check_ahb_data();
+        if(ahb_predicted_pkt.HRDATA == ahb_data_pkt.HRDATA);
+        verified_data_count++;
+    endtask
 
-    forever begin
-      // Get an AHB transaction from the first FIFO and push it into the queue
-      ahb_fifo[0].get(ahb_tx);
-      ahb_q.push_back(ahb_tx);
+    // report_phase: Displays a summary of verification statistics at the end of simulation  
+    function void report_phase(uvm_phase phase);
+        $display("\n=== Scoreboard Report ===");
+        $display("AHB Packets: %0d", ahb_pkt_count);
+        $display("APB Packets: %0d", apb_pkt_count);
+        $display("Verified Transactions: %d", verified_data_count);
+        $display("Unverified Transactions: %d", (ahb_pkt_count - verified_data_count));
 
-      // Get an APB transaction from the first FIFO
-      apb_fifo[0].get(apb_tx);
-
-      `uvm_info("scoreboard", 
-        $sformatf("AHB Transaction: addr=0x%h, Hwdata=0x%h, Hrdata=0x%h", 
-                  ahb_tx.Haddr, ahb_tx.Hwdata, ahb_tx.Hrdata), UVM_MEDIUM);
-      `uvm_info("scoreboard", 
-        $sformatf("APB Transaction: addr=0x%h, Pwdata=0x%h, Prdata=0x%h", 
-                  apb_tx.Paddr, apb_tx.Pwdata, apb_tx.Prdata), UVM_MEDIUM);
-
-      // Correlate: Pop the oldest AHB transaction from the queue
-      ahb_tx = ahb_q.pop_front();
-
-      // Assign coverage variables from transactions:
-      cg_Haddr      = ahb_tx.Haddr;
-      cg_Hwdata     = ahb_tx.Hwdata;
-      cg_trans_type = ahb_tx.trans_type;  // Assumes this is compatible with Transaction enum
-      cg_Hsize      = ahb_tx.Hsize;
-      cg_Hwrite     = ahb_tx.Hwrite;
-      cg_Pwrite     = apb_tx.Pwrite;       // From the APB transaction
-
-      // Sample the covergroup
-      my_cov.sample();
-
-      // Compare the transactions based on whether it is a write or a read
-      if (ahb_tx.Hwrite) begin
-        case (ahb_tx.Hsize)
-          2'b00: begin
-            if (ahb_tx.Haddr[1:0] == 2'b00)
-              compare_data(ahb_tx.Hwdata[7:0], apb_tx.Pwdata[7:0], ahb_tx.Haddr, apb_tx.Paddr);
-            else if (ahb_tx.Haddr[1:0] == 2'b01)
-              compare_data(ahb_tx.Hwdata[15:8], apb_tx.Pwdata[7:0], ahb_tx.Haddr, apb_tx.Paddr);
-            else if (ahb_tx.Haddr[1:0] == 2'b10)
-              compare_data(ahb_tx.Hwdata[23:16], apb_tx.Pwdata[7:0], ahb_tx.Haddr, apb_tx.Paddr);
-            else if (ahb_tx.Haddr[1:0] == 2'b11)
-              compare_data(ahb_tx.Hwdata[31:24], apb_tx.Pwdata[7:0], ahb_tx.Haddr, apb_tx.Paddr);
-          end
-          2'b01: begin
-            if (ahb_tx.Haddr[1:0] == 2'b00)
-              compare_data(ahb_tx.Hwdata[15:0], apb_tx.Pwdata[15:0], ahb_tx.Haddr, apb_tx.Paddr);
-            else if (ahb_tx.Haddr[1:0] == 2'b10)
-              compare_data(ahb_tx.Hwdata[31:16], apb_tx.Pwdata[15:0], ahb_tx.Haddr, apb_tx.Paddr);
-          end
-          2'b10: begin
-            compare_data(ahb_tx.Hwdata, apb_tx.Pwdata, ahb_tx.Haddr, apb_tx.Paddr);
-          end
-          default: begin
-            `uvm_error("scoreboard", "Unexpected Hsize value in AHB write transaction");
-          end
-        endcase
-      end
-      else begin
-        case (ahb_tx.Hsize)
-          2'b00: begin
-            if (ahb_tx.Haddr[1:0] == 2'b00)
-              compare_data(ahb_tx.Hrdata[7:0], apb_tx.Prdata[7:0], ahb_tx.Haddr, apb_tx.Paddr);
-            else if (ahb_tx.Haddr[1:0] == 2'b01)
-              compare_data(ahb_tx.Hrdata[7:0], apb_tx.Prdata[15:8], ahb_tx.Haddr, apb_tx.Paddr);
-            else if (ahb_tx.Haddr[1:0] == 2'b10)
-              compare_data(ahb_tx.Hrdata[7:0], apb_tx.Prdata[23:16], ahb_tx.Haddr, apb_tx.Paddr);
-            else if (ahb_tx.Haddr[1:0] == 2'b11)
-              compare_data(ahb_tx.Hrdata[7:0], apb_tx.Prdata[31:24], ahb_tx.Haddr, apb_tx.Paddr);
-          end
-          2'b01: begin
-            if (ahb_tx.Haddr[1:0] == 2'b00)
-              compare_data(ahb_tx.Hrdata[15:0], apb_tx.Prdata[15:0], ahb_tx.Haddr, apb_tx.Paddr);
-            else if (ahb_tx.Haddr[1:0] == 2'b10)
-              compare_data(ahb_tx.Hrdata[15:0], apb_tx.Prdata[31:16], ahb_tx.Haddr, apb_tx.Paddr);
-          end
-          2'b10: begin
-            compare_data(ahb_tx.Hrdata, apb_tx.Prdata, ahb_tx.Haddr, apb_tx.Paddr);
-          end
-          default: begin
-            `uvm_error("scoreboard", "Unexpected Hsize value in AHB read transaction");
-          end
-        endcase
-      end
-
-    end // forever
-  endtask : run_phase
-
-  //-------------------------------------------------------------------------
-  // Function: compare_data
-  //   Compares the provided address and data fields and logs the results.
-  //-------------------------------------------------------------------------
-  function void compare_data(int Hdata, int Pdata, int Haddr, int Paddr);
-    `uvm_info("scoreboard", 
-      $sformatf("Comparing: Haddr=0x%h, Hdata=0x%h, Paddr=0x%h, Pdata=0x%h", 
-                Haddr, Hdata, Paddr, Pdata), UVM_LOW);
-
-    if (Haddr == Paddr)
-      `uvm_info("scoreboard", "Address compared successfully", UVM_LOW);
-    else
-      `uvm_error("scoreboard", "Address mismatch detected");
-
-    if (Hdata == Pdata)
-      `uvm_info("scoreboard", "Data compared successfully", UVM_LOW);
-    else
-      `uvm_error("scoreboard", "Data mismatch detected");
-  endfunction : compare_data
-
-endclass : scoreboard
+        // Display coverage statistics  
+        $display("=== Coverage Report ===");
+        $display("RESET Coverage: %0f%%", cov_group.reset.get_coverage());
+        $display("WRITE Coverage: %0f%%", cov_group.bus_write.get_coverage());
+        $display("READ Coverage: %0f%%", cov_group.bus_read.get_coverage());
+        $display("Data coverage: %0f%%", cov_group.H_data.get_coverage());
+        $display("=== End of Report ===\n");
+    endfunction
+endclass
