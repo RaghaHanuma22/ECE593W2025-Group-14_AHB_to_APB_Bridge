@@ -7,8 +7,7 @@
 // interface.
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-`include "ahb_driver.sv"
-import uvm_pkg::*;
+
 
 class ahb_monitor extends uvm_monitor;
   // Virtual interface to access DUT signals - using the ahb_intf

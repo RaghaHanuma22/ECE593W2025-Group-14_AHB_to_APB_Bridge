@@ -5,6 +5,7 @@ import uvm_pkg::*;
 // APB Transaction Class
 ///////////////////////////////////////////////////////////////////////////////////////////
 class apb_transaction extends uvm_sequence_item;
+`uvm_object_utils(apb_transaction)
   // APB signals
   rand bit [31:0] PADDR;
   rand bit [31:0] PWDATA;
@@ -19,6 +20,7 @@ class apb_transaction extends uvm_sequence_item;
   bit setup_phase;
   bit access_phase;
   
+  /*
   // UVM factory registration
   `uvm_object_utils_begin(apb_transaction)
   `uvm_field_int(PADDR, UVM_ALL_ON)
@@ -32,7 +34,8 @@ class apb_transaction extends uvm_sequence_item;
   `uvm_field_int(setup_phase, UVM_DEFAULT)
   `uvm_field_int(access_phase, UVM_DEFAULT)
   `uvm_object_utils_end
-  
+  */
+
   // Constructor
   function new(string name = "apb_transaction");
     super.new(name);
