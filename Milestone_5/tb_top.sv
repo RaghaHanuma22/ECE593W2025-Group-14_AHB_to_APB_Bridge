@@ -43,6 +43,9 @@ int count = 500;  // Set the total number of transactions to be generated (can b
 `include "ahb_apb_test.sv"  // AHB-APB test class
 `include "ahb_apb_single_test.sv"  // AHB-APB single test class
 
+//Assertions
+`include "ahb_apb_assertions.sv"
+
 module tb_top();
     // Clock signal declaration
     bit clk;
@@ -73,6 +76,32 @@ module tb_top();
         .Pwrite(APB_INF.PWRITE),  // APB write signal
         .Penable(APB_INF.PENABLE)  // APB enable signal
     );
+
+// Bind assertions to bridge
+bind Bridge_Top ahb_apb_assertions assertions_inst (
+    .Hclk(Hclk),
+    .Hresetn(Hresetn),
+    .Hwrite(Hwrite),
+    .Hreadyin(Hreadyin),
+    .Hreadyout(Hreadyout),
+    .Htrans(Htrans),
+    .Hwdata(Hwdata),
+    .Haddr(Haddr),
+    .Hresp(Hresp),
+    .Pwrite(Pwrite),
+    .Pselx(Pselx),
+    .Penable(Penable),
+    .Paddr(Paddr),
+    .Pwdata(Pwdata),
+    .Prdata(Prdata),
+    .valid(AHBSlave.valid),
+    .Haddr1(AHBSlave.Haddr1),
+    .Haddr2(AHBSlave.Haddr2),
+    .Hwritereg(AHBSlave.Hwritereg)
+);
+
+
+
 
     // Initialization block to configure the UVM environment
     initial begin
