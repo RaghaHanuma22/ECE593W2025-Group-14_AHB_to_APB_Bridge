@@ -43,7 +43,7 @@ module ahb_apb_assertions (
     
 
     //////////////////////////////////////////////////////////////////
-    // 4. Data Transfer Assertions (More tolerant)
+    // 4. Data Transfer Assertions 
     //////////////////////////////////////////////////////////////////
     
     // Pipelining check - simplified to just check address pipelining
@@ -72,7 +72,7 @@ module ahb_apb_assertions (
         $info("Valid signal generation covered");
     
     //////////////////////////////////////////////////////////////////
-    // 5. Reset Behavior Assertions (Targeted for your design)
+    // 5. Reset Behavior Assertions 
     //////////////////////////////////////////////////////////////////
     
     // Reset behavior - check specific outputs
