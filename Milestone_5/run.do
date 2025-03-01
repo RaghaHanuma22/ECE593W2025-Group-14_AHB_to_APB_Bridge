@@ -14,5 +14,5 @@ vcover report -code sbcfet coverage_data.ucdb -output code_coverage.txt \
 # Generate functional coverage report
 vcover report -details -cvg coverage_data.ucdb -output functional_coverage.txt
 
-# Generate assertion coverage report (new)
+# Generate assertion coverage report 
 vcover report -details -assert coverage_data.ucdb -output assertion_coverage.txt
