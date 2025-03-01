@@ -186,7 +186,7 @@ class ahb_combined_sequence extends uvm_sequence # (ahb_transaction);
     
     // Combined sequence body
     virtual task body();
-        // PART 1: Write Transactions (exactly like ahb_single_write_sequence)
+        // PART 1: Write Transactions 
         
         // Write Transaction 1
         req = ahb_transaction::type_id::create("req");
@@ -220,7 +220,7 @@ class ahb_combined_sequence extends uvm_sequence # (ahb_transaction);
         });
         finish_item(req);
 
-        // Write Transaction 3
+        // Write Transaction 4
         req = ahb_transaction::type_id::create("req");
         start_item(req);
         assert(req.randomize() with {
@@ -234,7 +234,7 @@ class ahb_combined_sequence extends uvm_sequence # (ahb_transaction);
         // Small delay between write and read operations
         #50;
 
-        // PART 2: Read Transactions (exactly like ahb_single_read_sequence)
+        // PART 2: Read Transactions 
         
         // Read Transaction 1
         req = ahb_transaction::type_id::create("req");
