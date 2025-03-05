@@ -99,9 +99,30 @@ end
 always_ff @(posedge Hclk) begin
     if (~Hresetn)
         Hwritereg <= 0;
+/*
     else
         Hwritereg <= Hwrite;
 end
+*/
+
+`ifdef BUG_DATA_MODE
+    else begin
+        Hwdata1 <= 0;
+        Hwdata2 <= Hwdata1;
+    end
+`elsif NORMAL_MODE
+    else begin
+        Hwdata1 <= Hwdata;
+        Hwdata2 <= Hwdata1;
+    end
+`else
+    else begin
+        Hwdata1 <= Hwdata;
+        Hwdata2 <= Hwdata1;
+    end
+`endif
+end
+
 
 //-----------------------------------------------------------------------------------------
 // Valid Signal Generation
