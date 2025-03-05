@@ -75,6 +75,16 @@ module AHB_slave_interface(
 
 // Address Pipelining
 always_ff @(posedge Hclk) begin
+`ifdef BUG_ADDR_MODE
+    if (Hresetn) begin //bug
+        Haddr1 <= 0;
+        Haddr2 <= 0;
+    end else begin
+        Haddr1 <= Haddr;
+        Haddr2 <= Haddr1;
+    end
+end
+`elsif NORMAL_MODE
     if (~Hresetn) begin //bug
         Haddr1 <= 0;
         Haddr2 <= 0;
@@ -83,6 +93,17 @@ always_ff @(posedge Hclk) begin
         Haddr2 <= Haddr1;
     end
 end
+`else
+    if (~Hresetn) begin //bug
+        Haddr1 <= 0;
+        Haddr2 <= 0;
+    end else begin
+        Haddr1 <= Haddr;
+        Haddr2 <= Haddr1;
+    end
+end
+
+`endif
 
 // Write Data Pipelining
 always_ff @(posedge Hclk) begin
@@ -99,29 +120,10 @@ end
 always_ff @(posedge Hclk) begin
     if (~Hresetn)
         Hwritereg <= 0;
-/*
     else
         Hwritereg <= Hwrite;
 end
-*/
 
-`ifdef BUG_DATA_MODE
-    else begin
-        Hwdata1 <= 0;
-        Hwdata2 <= Hwdata1;
-    end
-`elsif NORMAL_MODE
-    else begin
-        Hwdata1 <= Hwdata;
-        Hwdata2 <= Hwdata1;
-    end
-`else
-    else begin
-        Hwdata1 <= Hwdata;
-        Hwdata2 <= Hwdata1;
-    end
-`endif
-end
 
 
 //-----------------------------------------------------------------------------------------
