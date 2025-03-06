@@ -1,0 +1,216 @@
+Coverage Report by instance with details
+
+=================================================================================
+=== Instance: /tb_top_sv_unit
+=== Design Unit: work.tb_top_sv_unit
+=================================================================================
+
+Covergroup Coverage:
+    Covergroups                      1        na        na   100.00%
+        Coverpoints/Crosses          7        na        na        na
+            Covergroup Bins         13        13         0   100.00%
+----------------------------------------------------------------------------------------------------------
+Covergroup                                             Metric       Goal       Bins    Status               
+                                                                                                         
+----------------------------------------------------------------------------------------------------------
+ TYPE /tb_top_sv_unit/scoreboard/cov_group            100.00%        100          -    Covered              
+    covered/total bins:                                    13         13          -                      
+    missing/total bins:                                     0         13          -                      
+    % Hit:                                            100.00%        100          -                      
+    Coverpoint reset                                  100.00%        100          -    Covered              
+        covered/total bins:                                 1          1          -                      
+        missing/total bins:                                 0          1          -                      
+        % Hit:                                        100.00%        100          -                      
+        bin reset_val                                     103          1          -    Covered              
+    Coverpoint bus_write                              100.00%        100          -    Covered              
+        covered/total bins:                                 1          1          -                      
+        missing/total bins:                                 0          1          -                      
+        % Hit:                                        100.00%        100          -                      
+        bin write_val                                     450          1          -    Covered              
+    Coverpoint bus_read                               100.00%        100          -    Covered              
+        covered/total bins:                                 1          1          -                      
+        missing/total bins:                                 0          1          -                      
+        % Hit:                                        100.00%        100          -                      
+        bin read_val                                      206          1          -    Covered              
+    Coverpoint H_data                                 100.00%        100          -    Covered              
+        covered/total bins:                                 1          1          -                      
+        missing/total bins:                                 0          1          -                      
+        % Hit:                                        100.00%        100          -                      
+        bin range                                         454          1          -    Covered              
+    Coverpoint trans_type                             100.00%        100          -    Covered              
+        covered/total bins:                                 3          3          -                      
+        missing/total bins:                                 0          3          -                      
+        % Hit:                                        100.00%        100          -                      
+        bin idle_val                                      203          1          -    Covered              
+        bin nonseq_val                                    100          1          -    Covered              
+        bin seq_val                                       353          1          -    Covered              
+    Cross WRITE_COVERAGE                              100.00%        100          -    Covered              
+        covered/total bins:                                 3          3          -                      
+        missing/total bins:                                 0          3          -                      
+        % Hit:                                        100.00%        100          -                      
+        Auto, Default and User Defined Bins:
+            bin <write_val,seq_val>                       300          1          -    Covered              
+            bin <write_val,nonseq_val>                     50          1          -    Covered              
+            bin <write_val,idle_val>                      100          1          -    Covered              
+    Cross READ_COVERAGE                               100.00%        100          -    Covered              
+        covered/total bins:                                 3          3          -                      
+        missing/total bins:                                 0          3          -                      
+        % Hit:                                        100.00%        100          -                      
+        Auto, Default and User Defined Bins:
+            bin <read_val,seq_val>                         53          1          -    Covered              
+            bin <read_val,nonseq_val>                      50          1          -    Covered              
+            bin <read_val,idle_val>                       103          1          -    Covered              
+ Covergroup instance \/tb_top_sv_unit::scoreboard::cov_group  
+                                                      100.00%        100          -    Covered              
+    covered/total bins:                                    13         13          -                      
+    missing/total bins:                                     0         13          -                      
+    % Hit:                                            100.00%        100          -                      
+    Coverpoint reset                                  100.00%        100          -    Covered              
+        covered/total bins:                                 1          1          -                      
+        missing/total bins:                                 0          1          -                      
+        % Hit:                                        100.00%        100          -                      
+        bin reset_val                                     103          1          -    Covered              
+    Coverpoint bus_write                              100.00%        100          -    Covered              
+        covered/total bins:                                 1          1          -                      
+        missing/total bins:                                 0          1          -                      
+        % Hit:                                        100.00%        100          -                      
+        bin write_val                                     450          1          -    Covered              
+    Coverpoint bus_read                               100.00%        100          -    Covered              
+        covered/total bins:                                 1          1          -                      
+        missing/total bins:                                 0          1          -                      
+        % Hit:                                        100.00%        100          -                      
+        bin read_val                                      206          1          -    Covered              
+    Coverpoint H_data                                 100.00%        100          -    Covered              
+        covered/total bins:                                 1          1          -                      
+        missing/total bins:                                 0          1          -                      
+        % Hit:                                        100.00%        100          -                      
+        bin range                                         454          1          -    Covered              
+    Coverpoint trans_type                             100.00%        100          -    Covered              
+        covered/total bins:                                 3          3          -                      
+        missing/total bins:                                 0          3          -                      
+        % Hit:                                        100.00%        100          -                      
+        bin idle_val                                      203          1          -    Covered              
+        bin nonseq_val                                    100          1          -    Covered              
+        bin seq_val                                       353          1          -    Covered              
+    Cross WRITE_COVERAGE                              100.00%        100          -    Covered              
+        covered/total bins:                                 3          3          -                      
+        missing/total bins:                                 0          3          -                      
+        % Hit:                                        100.00%        100          -                      
+        Auto, Default and User Defined Bins:
+            bin <write_val,seq_val>                       300          1          -    Covered              
+            bin <write_val,nonseq_val>                     50          1          -    Covered              
+            bin <write_val,idle_val>                      100          1          -    Covered              
+    Cross READ_COVERAGE                               100.00%        100          -    Covered              
+        covered/total bins:                                 3          3          -                      
+        missing/total bins:                                 0          3          -                      
+        % Hit:                                        100.00%        100          -                      
+        Auto, Default and User Defined Bins:
+            bin <read_val,seq_val>                         53          1          -    Covered              
+            bin <read_val,nonseq_val>                      50          1          -    Covered              
+            bin <read_val,idle_val>                       103          1          -    Covered              
+
+COVERGROUP COVERAGE:
+----------------------------------------------------------------------------------------------------------
+Covergroup                                             Metric       Goal       Bins    Status               
+                                                                                                         
+----------------------------------------------------------------------------------------------------------
+ TYPE /tb_top_sv_unit/scoreboard/cov_group            100.00%        100          -    Covered              
+    covered/total bins:                                    13         13          -                      
+    missing/total bins:                                     0         13          -                      
+    % Hit:                                            100.00%        100          -                      
+    Coverpoint reset                                  100.00%        100          -    Covered              
+        covered/total bins:                                 1          1          -                      
+        missing/total bins:                                 0          1          -                      
+        % Hit:                                        100.00%        100          -                      
+        bin reset_val                                     103          1          -    Covered              
+    Coverpoint bus_write                              100.00%        100          -    Covered              
+        covered/total bins:                                 1          1          -                      
+        missing/total bins:                                 0          1          -                      
+        % Hit:                                        100.00%        100          -                      
+        bin write_val                                     450          1          -    Covered              
+    Coverpoint bus_read                               100.00%        100          -    Covered              
+        covered/total bins:                                 1          1          -                      
+        missing/total bins:                                 0          1          -                      
+        % Hit:                                        100.00%        100          -                      
+        bin read_val                                      206          1          -    Covered              
+    Coverpoint H_data                                 100.00%        100          -    Covered              
+        covered/total bins:                                 1          1          -                      
+        missing/total bins:                                 0          1          -                      
+        % Hit:                                        100.00%        100          -                      
+        bin range                                         454          1          -    Covered              
+    Coverpoint trans_type                             100.00%        100          -    Covered              
+        covered/total bins:                                 3          3          -                      
+        missing/total bins:                                 0          3          -                      
+        % Hit:                                        100.00%        100          -                      
+        bin idle_val                                      203          1          -    Covered              
+        bin nonseq_val                                    100          1          -    Covered              
+        bin seq_val                                       353          1          -    Covered              
+    Cross WRITE_COVERAGE                              100.00%        100          -    Covered              
+        covered/total bins:                                 3          3          -                      
+        missing/total bins:                                 0          3          -                      
+        % Hit:                                        100.00%        100          -                      
+        Auto, Default and User Defined Bins:
+            bin <write_val,seq_val>                       300          1          -    Covered              
+            bin <write_val,nonseq_val>                     50          1          -    Covered              
+            bin <write_val,idle_val>                      100          1          -    Covered              
+    Cross READ_COVERAGE                               100.00%        100          -    Covered              
+        covered/total bins:                                 3          3          -                      
+        missing/total bins:                                 0          3          -                      
+        % Hit:                                        100.00%        100          -                      
+        Auto, Default and User Defined Bins:
+            bin <read_val,seq_val>                         53          1          -    Covered              
+            bin <read_val,nonseq_val>                      50          1          -    Covered              
+            bin <read_val,idle_val>                       103          1          -    Covered              
+ Covergroup instance \/tb_top_sv_unit::scoreboard::cov_group  
+                                                      100.00%        100          -    Covered              
+    covered/total bins:                                    13         13          -                      
+    missing/total bins:                                     0         13          -                      
+    % Hit:                                            100.00%        100          -                      
+    Coverpoint reset                                  100.00%        100          -    Covered              
+        covered/total bins:                                 1          1          -                      
+        missing/total bins:                                 0          1          -                      
+        % Hit:                                        100.00%        100          -                      
+        bin reset_val                                     103          1          -    Covered              
+    Coverpoint bus_write                              100.00%        100          -    Covered              
+        covered/total bins:                                 1          1          -                      
+        missing/total bins:                                 0          1          -                      
+        % Hit:                                        100.00%        100          -                      
+        bin write_val                                     450          1          -    Covered              
+    Coverpoint bus_read                               100.00%        100          -    Covered              
+        covered/total bins:                                 1          1          -                      
+        missing/total bins:                                 0          1          -                      
+        % Hit:                                        100.00%        100          -                      
+        bin read_val                                      206          1          -    Covered              
+    Coverpoint H_data                                 100.00%        100          -    Covered              
+        covered/total bins:                                 1          1          -                      
+        missing/total bins:                                 0          1          -                      
+        % Hit:                                        100.00%        100          -                      
+        bin range                                         454          1          -    Covered              
+    Coverpoint trans_type                             100.00%        100          -    Covered              
+        covered/total bins:                                 3          3          -                      
+        missing/total bins:                                 0          3          -                      
+        % Hit:                                        100.00%        100          -                      
+        bin idle_val                                      203          1          -    Covered              
+        bin nonseq_val                                    100          1          -    Covered              
+        bin seq_val                                       353          1          -    Covered              
+    Cross WRITE_COVERAGE                              100.00%        100          -    Covered              
+        covered/total bins:                                 3          3          -                      
+        missing/total bins:                                 0          3          -                      
+        % Hit:                                        100.00%        100          -                      
+        Auto, Default and User Defined Bins:
+            bin <write_val,seq_val>                       300          1          -    Covered              
+            bin <write_val,nonseq_val>                     50          1          -    Covered              
+            bin <write_val,idle_val>                      100          1          -    Covered              
+    Cross READ_COVERAGE                               100.00%        100          -    Covered              
+        covered/total bins:                                 3          3          -                      
+        missing/total bins:                                 0          3          -                      
+        % Hit:                                        100.00%        100          -                      
+        Auto, Default and User Defined Bins:
+            bin <read_val,seq_val>                         53          1          -    Covered              
+            bin <read_val,nonseq_val>                      50          1          -    Covered              
+            bin <read_val,idle_val>                       103          1          -    Covered              
+
+TOTAL COVERGROUP COVERAGE: 100.00%  COVERGROUP TYPES: 1
+
+Total Coverage By Instance (filtered view): 100.00%
+

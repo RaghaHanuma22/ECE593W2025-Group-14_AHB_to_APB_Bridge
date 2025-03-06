@@ -1,0 +1,107 @@
+Coverage Report by instance with details
+
+=================================================================================
+=== Instance: /tb_top/DUT/assertions_inst
+=== Design Unit: work.ahb_apb_assertions
+=================================================================================
+
+Assertion Coverage:
+    Assertions                       7         7         0   100.00%
+--------------------------------------------------------------------
+Name                 File(Line)                   Failure      Pass 
+                                                  Count        Count
+--------------------------------------------------------------------
+/tb_top/DUT/assertions_inst/VALID_HTRANS
+                     ahb_apb_assertions.sv(24)          0          1
+/tb_top/DUT/assertions_inst/HRESP_OKAY
+                     ahb_apb_assertions.sv(38)          0          1
+/tb_top/DUT/assertions_inst/ADDR_PIPELINING
+                     ahb_apb_assertions.sv(55)          0          1
+/tb_top/DUT/assertions_inst/VALID_SIGNAL_GEN
+                     ahb_apb_assertions.sv(68)          0          1
+/tb_top/DUT/assertions_inst/RESET_BEHAVIOR
+                     ahb_apb_assertions.sv(84)          0          1
+/tb_top/DUT/assertions_inst/BASIC_WRITE
+                     ahb_apb_assertions.sv(100)
+                                                        0          1
+/tb_top/DUT/assertions_inst/BASIC_READ
+                     ahb_apb_assertions.sv(112)
+                                                        0          1
+
+=================================================================================
+=== Instance: /tb_top_sv_unit
+=== Design Unit: work.tb_top_sv_unit
+=================================================================================
+
+Assertion Coverage:
+    Assertions                      10        10         0   100.00%
+--------------------------------------------------------------------
+Name                 File(Line)                   Failure      Pass 
+                                                  Count        Count
+--------------------------------------------------------------------
+/tb_top_sv_unit/ahb_combined_sequence/body/#ublk#49146052#192/immed__276
+                     ahb_sequence.sv(276)               0          1
+/tb_top_sv_unit/ahb_combined_sequence/body/#ublk#49146052#192/immed__265
+                     ahb_sequence.sv(265)               0          1
+/tb_top_sv_unit/ahb_combined_sequence/body/#ublk#49146052#192/immed__254
+                     ahb_sequence.sv(254)               0          1
+/tb_top_sv_unit/ahb_combined_sequence/body/#ublk#49146052#192/immed__244
+                     ahb_sequence.sv(244)               0          1
+/tb_top_sv_unit/ahb_combined_sequence/body/#ublk#49146052#192/immed__228
+                     ahb_sequence.sv(228)               0          1
+/tb_top_sv_unit/ahb_combined_sequence/body/#ublk#49146052#192/immed__217
+                     ahb_sequence.sv(217)               0          1
+/tb_top_sv_unit/ahb_combined_sequence/body/#ublk#49146052#192/immed__206
+                     ahb_sequence.sv(206)               0          1
+/tb_top_sv_unit/ahb_combined_sequence/body/#ublk#49146052#192/immed__196
+                     ahb_sequence.sv(196)               0          1
+/tb_top_sv_unit/apb_single_write_sequence/body/#ublk#49146052#80/immed__83
+                     apb_sequence.sv(83)                0          1
+/tb_top_sv_unit/apb_single_read_sequence/body/#ublk#49146052#103/immed__106
+                     apb_sequence.sv(106)               0          1
+
+
+ASSERTION RESULTS:
+--------------------------------------------------------------------
+Name                 File(Line)                   Failure      Pass 
+                                                  Count        Count
+--------------------------------------------------------------------
+/tb_top/DUT/assertions_inst/VALID_HTRANS
+                     ahb_apb_assertions.sv(24)          0          1
+/tb_top/DUT/assertions_inst/HRESP_OKAY
+                     ahb_apb_assertions.sv(38)          0          1
+/tb_top/DUT/assertions_inst/ADDR_PIPELINING
+                     ahb_apb_assertions.sv(55)          0          1
+/tb_top/DUT/assertions_inst/VALID_SIGNAL_GEN
+                     ahb_apb_assertions.sv(68)          0          1
+/tb_top/DUT/assertions_inst/RESET_BEHAVIOR
+                     ahb_apb_assertions.sv(84)          0          1
+/tb_top/DUT/assertions_inst/BASIC_WRITE
+                     ahb_apb_assertions.sv(100)
+                                                        0          1
+/tb_top/DUT/assertions_inst/BASIC_READ
+                     ahb_apb_assertions.sv(112)
+                                                        0          1
+/tb_top_sv_unit/ahb_combined_sequence/body/#ublk#49146052#192/immed__276
+                     ahb_sequence.sv(276)               0          1
+/tb_top_sv_unit/ahb_combined_sequence/body/#ublk#49146052#192/immed__265
+                     ahb_sequence.sv(265)               0          1
+/tb_top_sv_unit/ahb_combined_sequence/body/#ublk#49146052#192/immed__254
+                     ahb_sequence.sv(254)               0          1
+/tb_top_sv_unit/ahb_combined_sequence/body/#ublk#49146052#192/immed__244
+                     ahb_sequence.sv(244)               0          1
+/tb_top_sv_unit/ahb_combined_sequence/body/#ublk#49146052#192/immed__228
+                     ahb_sequence.sv(228)               0          1
+/tb_top_sv_unit/ahb_combined_sequence/body/#ublk#49146052#192/immed__217
+                     ahb_sequence.sv(217)               0          1
+/tb_top_sv_unit/ahb_combined_sequence/body/#ublk#49146052#192/immed__206
+                     ahb_sequence.sv(206)               0          1
+/tb_top_sv_unit/ahb_combined_sequence/body/#ublk#49146052#192/immed__196
+                     ahb_sequence.sv(196)               0          1
+/tb_top_sv_unit/apb_single_write_sequence/body/#ublk#49146052#80/immed__83
+                     apb_sequence.sv(83)                0          1
+/tb_top_sv_unit/apb_single_read_sequence/body/#ublk#49146052#103/immed__106
+                     apb_sequence.sv(106)               0          1
+
+Total Coverage By Instance (filtered view): 100.00%
+
